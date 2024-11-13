@@ -7,8 +7,7 @@ private:
     string name;
     double area;
 
-
-    static int buildingCount;
+    static int buildingCount;          
     static double totalConstructionCost;  
 
 public:
@@ -16,7 +15,7 @@ public:
     Building(string name, double area) {
         this->name = name;
         this->area = area;
-        buildingCount++; 
+        buildingCount++;  
     }
 
 
@@ -26,7 +25,7 @@ public:
 
 
     static double getTotalConstructionCost(double costPerSqm) {
-        return buildingCount * costPerSqm;  
+        return buildingCount * costPerSqm;
     }
 
 
@@ -45,7 +44,6 @@ public:
         cout << "Building Name: " << name << endl;
         cout << "Area: " << area << " sqm" << endl;
     }
-
 
     double getArea() const {
         return this->area;
@@ -90,20 +88,19 @@ class EnergySimulationEngine {
 private:
     double energyConsumption;
     
-    static double totalEnergyConsumption;
+    static double totalEnergyConsumption;  
 
 public:
-  
+
     EnergySimulationEngine(double consumption) {
         this->energyConsumption = consumption;
     }
-
 
     double calculateEnergyEfficiency(double area) {
         return energyConsumption * area;
     }
 
- 
+
     void displayEnergyEfficiency(double area) {
         double totalEnergy = calculateEnergyEfficiency(area);
         totalEnergyConsumption += totalEnergy;  
@@ -121,14 +118,15 @@ double EnergySimulationEngine::totalEnergyConsumption = 0.0;
 
 int main() {
 
-
     Building* buildings[3];
     buildings[0] = new Building("Office Complex", 500.0);
     buildings[1] = new Building("Residential Apartment", 300.0);
     buildings[2] = new Building("Shopping Mall", 800.0);
 
-  
+
     Material* concrete = new Material("Concrete", 150.0);
+
+
     EnergySimulationEngine* energySim = new EnergySimulationEngine(12.5);
 
 
@@ -139,12 +137,12 @@ int main() {
         cout << "\nDetails for Building " << (i + 1) << ":\n";
         buildings[i]->displayInfo();
         
-   
+
         double totalCost = buildings[i]->calculateCost(concrete->getCostPerSqm());
         cout << "Total Construction Cost: $" << totalCost << endl;
 
-
-        energySim->displayEnergyEfficiency(buildings[i]->getArea()); 
+ 
+        energySim->displayEnergyEfficiency(buildings[i]->getArea());
     }
 
 
@@ -155,7 +153,6 @@ int main() {
 
 
     cout << "Total Construction Cost for All Buildings: $" << Building::getTotalConstructionCost(concrete->getCostPerSqm()) << endl;
-
 
     delete concrete;
     delete energySim;
