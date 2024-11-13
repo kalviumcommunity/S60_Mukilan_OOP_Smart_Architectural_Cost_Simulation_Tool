@@ -8,17 +8,18 @@ private:
     double area;
 
 public:
-
+   
     Building(string name, double area) {
         this->name = name;
         this->area = area;
     }
 
-
+   
     Building& setArea(double newArea) {
         this->area = newArea;
-        return *this; 
+        return *this;  
     }
+
 
     double calculateCost(double costPerSqm) {
         return this->area * costPerSqm;
@@ -49,12 +50,13 @@ public:
         return *this;  
     }
 
+
     void displayInfo() {
         cout << "Material Type: " << type << endl;
         cout << "Cost per sqm: $" << costPerSqm << endl;
     }
 
-    // Getter method for cost per sqm
+
     double getCostPerSqm() const {
         return this->costPerSqm;
     }
@@ -62,19 +64,24 @@ public:
 
 int main() {
 
-    Building myBuilding("Office Complex", 500.0);
+    Building buildings[] = {
+        Building("Office Complex", 500.0),
+        Building("Residential Apartment", 300.0),
+        Building("Shopping Mall", 800.0)
+    };
+
+
     Material concrete("Concrete", 150.0);
 
-    myBuilding.displayInfo();
+
     concrete.displayInfo();
 
- 
-    double totalCost = myBuilding.calculateCost(concrete.getCostPerSqm());
-    cout << "Total Construction Cost: $" << totalCost << endl;
-
-
-    myBuilding.setArea(600.0).displayInfo();
-    concrete.setCostPerSqm(160.0).displayInfo();
+    for (int i = 0; i < 3; ++i) {
+        cout << "\nDetails for Building " << (i + 1) << ":\n";
+        buildings[i].displayInfo();
+        double totalCost = buildings[i].calculateCost(concrete.getCostPerSqm());
+        cout << "Total Construction Cost: $" << totalCost << endl;
+    }
 
     return 0;
 }
