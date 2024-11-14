@@ -45,9 +45,9 @@ public:
         return this->area * costPerSqm;
     }
 
-    virtual void displayInfo() {
+    void displayInfo() {  // Regular function (no longer abstract)
         cout << "Building Name: " << name << endl;
-        cout << "Area: " << area << " sqm" << endl;
+        cout << "Building Area: " << area << " sqm" << endl;
     }
 
     double getArea() const {
@@ -185,7 +185,6 @@ public:
     }
 };
 
-
 class ResidentialBuilding : public Building {
 private:
     int numApartments;
@@ -197,7 +196,7 @@ public:
     }
 
     void displayInfo() override { 
-        Building::displayInfo();
+        Building::displayInfo();  
         cout << "Number of Apartments: " << numApartments << endl;
     }
 };
@@ -217,16 +216,16 @@ public:
     }
 
     void displayInfo() override {
-        ResidentialBuilding::displayInfo();
+        ResidentialBuilding::displayInfo(); 
         cout << "Solar Panel Area: " << solarPanelArea << " sqm" << endl;
     }
 };
 
 int main() {
     Building* buildings[3];
-    buildings[0] = new Building("Residential Apartment 1", 500.0);
-    buildings[1] = new Building("Residential Apartment 2", 300.0);
-    buildings[2] = new Building("Residential Apartment 3", 800.0);
+    buildings[0] = new ResidentialBuilding("Residential Apartment 1", 500.0, 10);
+    buildings[1] = new ResidentialBuilding("Residential Apartment 2", 300.0, 5);
+    buildings[2] = new ResidentialBuilding("Residential Apartment 3", 800.0, 15);
 
     Material* concrete = new Material("Concrete", 150.0);
     EnergySimulationEngine* energySim = new EnergySimulationEngine(12.5);
