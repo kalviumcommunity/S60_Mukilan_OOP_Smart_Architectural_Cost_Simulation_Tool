@@ -45,10 +45,7 @@ public:
         return this->area * costPerSqm;
     }
 
-    void displayInfo() {  // Regular function (no longer abstract)
-        cout << "Building Name: " << name << endl;
-        cout << "Building Area: " << area << " sqm" << endl;
-    }
+    virtual void displayInfo() = 0;
 
     double getArea() const {
         return this->area;
@@ -184,6 +181,7 @@ public:
         return enteredPassword == password;
     }
 };
+
 
 class ResidentialBuilding : public Building {
 private:
