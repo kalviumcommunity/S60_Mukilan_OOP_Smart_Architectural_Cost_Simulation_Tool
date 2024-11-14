@@ -6,8 +6,8 @@ class Building {
 private:
     string name;
     double area;
-    static int buildingCount;     
-    static double totalConstructionCost; 
+    static int buildingCount;
+    static double totalConstructionCost;
 
 public:
     Building() {
@@ -20,7 +20,7 @@ public:
     Building(string name, double area) {
         this->name = name;
         this->area = area;
-        buildingCount++; 
+        buildingCount++;
         cout << "Parameterized constructor for Building called!" << endl;
     }
 
@@ -45,7 +45,10 @@ public:
         return this->area * costPerSqm;
     }
 
-    virtual void displayInfo() = 0;
+    virtual void displayInfo() {  // Default implementation for displayInfo
+        cout << "Building Name: " << name << endl;
+        cout << "Building Area: " << area << " sqm" << endl;
+    }
 
     double getArea() const {
         return this->area;
@@ -97,7 +100,7 @@ private:
     double energyConsumption;
 
 public:
-    static double totalEnergyConsumption;  
+    static double totalEnergyConsumption;
 
     EnergySimulationEngine() {
         energyConsumption = 0.0;
@@ -117,19 +120,19 @@ public:
         return energyConsumption * area;
     }
 
-    double calculateEnergyEfficiency(int numApartments) { 
-        return energyConsumption * numApartments * 10;  
+    double calculateEnergyEfficiency(int numApartments) {
+        return energyConsumption * numApartments * 10;
     }
 
     void displayEnergyEfficiency(double area) {
         double totalEnergy = calculateEnergyEfficiency(area);
-        totalEnergyConsumption += totalEnergy; 
+        totalEnergyConsumption += totalEnergy;
         cout << "Total Energy Consumption: " << totalEnergy << " kWh for " << area << " sqm" << endl;
     }
 
     void displayEnergyEfficiency(int numApartments) {
         double totalEnergy = calculateEnergyEfficiency(numApartments);
-        totalEnergyConsumption += totalEnergy; 
+        totalEnergyConsumption += totalEnergy;
         cout << "Total Energy Consumption: " << totalEnergy << " kWh for " << numApartments << " apartments" << endl;
     }
 
@@ -182,7 +185,6 @@ public:
     }
 };
 
-
 class ResidentialBuilding : public Building {
 private:
     int numApartments;
@@ -193,8 +195,8 @@ public:
         cout << "ResidentialBuilding constructor called!" << endl;
     }
 
-    void displayInfo() override { 
-        Building::displayInfo();  
+    void displayInfo() override {
+        Building::displayInfo();
         cout << "Number of Apartments: " << numApartments << endl;
     }
 };
@@ -214,7 +216,7 @@ public:
     }
 
     void displayInfo() override {
-        ResidentialBuilding::displayInfo(); 
+        ResidentialBuilding::displayInfo();
         cout << "Solar Panel Area: " << solarPanelArea << " sqm" << endl;
     }
 };
