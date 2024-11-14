@@ -2,17 +2,14 @@
 #include <string>
 using namespace std;
 
-
 class Building {
-    private:
+private:
     string name;
     double area;
-
     static int buildingCount;     
     static double totalConstructionCost; 
 
 public:
-    // Default Constructor
     Building() {
         name = "Unknown Building";
         area = 0.0;
@@ -20,7 +17,6 @@ public:
         cout << "Default constructor for Building called!" << endl;
     }
 
-    // Parameterized Constructor
     Building(string name, double area) {
         this->name = name;
         this->area = area;
@@ -28,8 +24,7 @@ public:
         cout << "Parameterized constructor for Building called!" << endl;
     }
 
-    // Destructor
-    ~Building() {
+    virtual ~Building() {
         cout << "Destructor for Building '" << name << "' called!" << endl;
     }
 
@@ -50,7 +45,7 @@ public:
         return this->area * costPerSqm;
     }
 
-    void displayInfo() {
+    virtual void displayInfo() {
         cout << "Building Name: " << name << endl;
         cout << "Area: " << area << " sqm" << endl;
     }
@@ -58,33 +53,29 @@ public:
     double getArea() const {
         return this->area;
     }
-
 };
 
 int Building::buildingCount = 0;
 double Building::totalConstructionCost = 0.0;
 
 class Material {
-    private:
+private:
     string type;
     double costPerSqm;
 
 public:
-    // Default Constructor
     Material() {
         type = "Generic Material";
         costPerSqm = 0.0;
         cout << "Default constructor for Material called!" << endl;
     }
 
-    // Parameterized Constructor
     Material(string type, double costPerSqm) {
         this->type = type;
         this->costPerSqm = costPerSqm;
         cout << "Parameterized constructor for Material called!" << endl;
     }
 
-    // Destructor
     ~Material() {
         cout << "Destructor for Material '" << type << "' called!" << endl;
     }
@@ -102,29 +93,25 @@ public:
     double getCostPerSqm() const {
         return this->costPerSqm;
     }
-
 };
 
 class EnergySimulationEngine {
-    private:
-    double energyConsumption;  
+private:
+    double energyConsumption;
 
 public:
     static double totalEnergyConsumption;  
 
-    // Default Constructor
     EnergySimulationEngine() {
         energyConsumption = 0.0;
         cout << "Default constructor for EnergySimulationEngine called!" << endl;
     }
 
-    // Parameterized Constructor
     EnergySimulationEngine(double consumption) {
         this->energyConsumption = consumption;
         cout << "Parameterized constructor for EnergySimulationEngine called!" << endl;
     }
 
-    // Destructor
     ~EnergySimulationEngine() {
         cout << "Destructor for EnergySimulationEngine called!" << endl;
     }
@@ -133,10 +120,20 @@ public:
         return energyConsumption * area;
     }
 
+    double calculateEnergyEfficiency(int numApartments) { 
+        return energyConsumption * numApartments * 10;  
+    }
+
     void displayEnergyEfficiency(double area) {
         double totalEnergy = calculateEnergyEfficiency(area);
         totalEnergyConsumption += totalEnergy; 
         cout << "Total Energy Consumption: " << totalEnergy << " kWh for " << area << " sqm" << endl;
+    }
+
+    void displayEnergyEfficiency(int numApartments) {
+        double totalEnergy = calculateEnergyEfficiency(numApartments);
+        totalEnergyConsumption += totalEnergy; 
+        cout << "Total Energy Consumption: " << totalEnergy << " kWh for " << numApartments << " apartments" << endl;
     }
 
     static double getTotalEnergyConsumption() {
@@ -146,15 +143,13 @@ public:
 
 double EnergySimulationEngine::totalEnergyConsumption = 0.0;
 
-
 class UserDetail {
-   private:
+private:
     string name;
     string companyName;
-    string password; 
+    string password;
 
 public:
-    // Default Constructor
     UserDetail() {
         name = "Unknown";
         companyName = "Unknown";
@@ -162,7 +157,6 @@ public:
         cout << "Default constructor for UserDetail called!" << endl;
     }
 
-    // Parameterized Constructor
     UserDetail(string name, string companyName, string password) {
         this->name = name;
         this->companyName = companyName;
@@ -170,7 +164,6 @@ public:
         cout << "Parameterized constructor for UserDetail called!" << endl;
     }
 
-    // Destructor
     ~UserDetail() {
         cout << "Destructor for UserDetail '" << name << "' called!" << endl;
     }
@@ -192,6 +185,7 @@ public:
     }
 };
 
+
 class ResidentialBuilding : public Building {
 private:
     int numApartments;
@@ -202,7 +196,7 @@ public:
         cout << "ResidentialBuilding constructor called!" << endl;
     }
 
-    void displayInfo() {
+    void displayInfo() override { 
         Building::displayInfo();
         cout << "Number of Apartments: " << numApartments << endl;
     }
@@ -222,15 +216,13 @@ public:
         return solarPanelArea * energyPerSqm;
     }
 
-    void displayInfo() {
+    void displayInfo() override {
         ResidentialBuilding::displayInfo();
         cout << "Solar Panel Area: " << solarPanelArea << " sqm" << endl;
     }
 };
 
-
 int main() {
- 
     Building* buildings[3];
     buildings[0] = new Building("Residential Apartment 1", 500.0);
     buildings[1] = new Building("Residential Apartment 2", 300.0);
@@ -292,7 +284,6 @@ int main() {
 
     cout << "\nTotal Buildings Created: " << Building::getBuildingCount() << endl;
     cout << "Total Energy Consumption for All Buildings: " << EnergySimulationEngine::getTotalEnergyConsumption() << " kWh" << endl;
-    cout << "Total Construction Cost for All Buildings: $" << Building::getTotalConstructionCost(concrete->getCostPerSqm()) << endl;
 
     delete concrete;
     delete energySim;
@@ -300,14 +291,6 @@ int main() {
         delete buildings[i];
         delete users[i];
     }
-
-    cout << "\nInheritance Demonstration" << endl;
-    ResidentialBuilding resBuilding("Residential Tower", 900.0, 50);
-    resBuilding.displayInfo();
-
-    SolarPoweredBuilding solarBuilding("Eco Apartments", 1200.0, 70, 150.0);
-    solarBuilding.displayInfo();
-    cout << "Estimated Solar Energy: " << solarBuilding.calculateSolarEnergy(5.0) << " kWh" << endl;
 
     return 0;
 }
