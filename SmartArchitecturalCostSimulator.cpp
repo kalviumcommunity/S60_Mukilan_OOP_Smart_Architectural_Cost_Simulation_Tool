@@ -2,7 +2,6 @@
 #include <string>
 using namespace std;
 
-// Original code...
 
 class Building {
     private:
@@ -229,9 +228,9 @@ public:
     }
 };
 
-// Main function with your original code untouched
+
 int main() {
-    // Your existing main function code
+ 
     Building* buildings[3];
     buildings[0] = new Building("Residential Apartment 1", 500.0);
     buildings[1] = new Building("Residential Apartment 2", 300.0);
@@ -302,7 +301,6 @@ int main() {
         delete users[i];
     }
 
-    // Demonstration of Inheritance
     cout << "\nInheritance Demonstration" << endl;
     ResidentialBuilding resBuilding("Residential Tower", 900.0, 50);
     resBuilding.displayInfo();
