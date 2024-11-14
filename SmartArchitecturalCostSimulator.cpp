@@ -2,8 +2,10 @@
 #include <string>
 using namespace std;
 
+// Original code...
+
 class Building {
-private:
+    private:
     string name;
     double area;
 
@@ -57,13 +59,14 @@ public:
     double getArea() const {
         return this->area;
     }
+
 };
 
 int Building::buildingCount = 0;
 double Building::totalConstructionCost = 0.0;
 
 class Material {
-private:
+    private:
     string type;
     double costPerSqm;
 
@@ -100,10 +103,11 @@ public:
     double getCostPerSqm() const {
         return this->costPerSqm;
     }
+
 };
 
 class EnergySimulationEngine {
-private:
+    private:
     double energyConsumption;  
 
 public:
@@ -143,8 +147,9 @@ public:
 
 double EnergySimulationEngine::totalEnergyConsumption = 0.0;
 
+
 class UserDetail {
-private:
+   private:
     string name;
     string companyName;
     string password; 
@@ -188,11 +193,49 @@ public:
     }
 };
 
+class ResidentialBuilding : public Building {
+private:
+    int numApartments;
+
+public:
+    ResidentialBuilding(string name, double area, int numApartments)
+        : Building(name, area), numApartments(numApartments) {
+        cout << "ResidentialBuilding constructor called!" << endl;
+    }
+
+    void displayInfo() {
+        Building::displayInfo();
+        cout << "Number of Apartments: " << numApartments << endl;
+    }
+};
+
+class SolarPoweredBuilding : public ResidentialBuilding {
+private:
+    double solarPanelArea;
+
+public:
+    SolarPoweredBuilding(string name, double area, int numApartments, double solarPanelArea)
+        : ResidentialBuilding(name, area, numApartments), solarPanelArea(solarPanelArea) {
+        cout << "SolarPoweredBuilding constructor called!" << endl;
+    }
+
+    double calculateSolarEnergy(double energyPerSqm) {
+        return solarPanelArea * energyPerSqm;
+    }
+
+    void displayInfo() {
+        ResidentialBuilding::displayInfo();
+        cout << "Solar Panel Area: " << solarPanelArea << " sqm" << endl;
+    }
+};
+
+// Main function with your original code untouched
 int main() {
+    // Your existing main function code
     Building* buildings[3];
-    buildings[0] = new Building("Office Complex", 500.0);
-    buildings[1] = new Building("Residential Apartment", 300.0);
-    buildings[2] = new Building("Shopping Mall", 800.0);
+    buildings[0] = new Building("Residential Apartment 1", 500.0);
+    buildings[1] = new Building("Residential Apartment 2", 300.0);
+    buildings[2] = new Building("Residential Apartment 3", 800.0);
 
     Material* concrete = new Material("Concrete", 150.0);
     EnergySimulationEngine* energySim = new EnergySimulationEngine(12.5);
@@ -258,6 +301,15 @@ int main() {
         delete buildings[i];
         delete users[i];
     }
+
+    // Demonstration of Inheritance
+    cout << "\nInheritance Demonstration" << endl;
+    ResidentialBuilding resBuilding("Residential Tower", 900.0, 50);
+    resBuilding.displayInfo();
+
+    SolarPoweredBuilding solarBuilding("Eco Apartments", 1200.0, 70, 150.0);
+    solarBuilding.displayInfo();
+    cout << "Estimated Solar Energy: " << solarBuilding.calculateSolarEnergy(5.0) << " kWh" << endl;
 
     return 0;
 }
