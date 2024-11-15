@@ -1,62 +1,62 @@
 #include <iostream>
 #include <string>
+#include <vector>
 using namespace std;
 
-class Building {
+class BuildingStatistics {
 private:
-    string name;
-    double area;
-    static int buildingCount;     
-    static double totalConstructionCost; 
+    static int buildingCount;
+    static double totalEnergyConsumption;
 
 public:
-    Building() {
-        name = "Unknown Building";
-        area = 0.0;
+    static void incrementBuildingCount() {
         buildingCount++;
-        cout << "Default constructor for Building called!" << endl;
     }
 
-    Building(string name, double area) {
-        this->name = name;
-        this->area = area;
-        buildingCount++; 
-        cout << "Parameterized constructor for Building called!" << endl;
-    }
-
-    virtual ~Building() {
-        cout << "Destructor for Building '" << name << "' called!" << endl;
+    static void addEnergyConsumption(double energy) {
+        totalEnergyConsumption += energy;
     }
 
     static int getBuildingCount() {
         return buildingCount;
     }
 
-    static double getTotalConstructionCost(double costPerSqm) {
-        return buildingCount * costPerSqm;
+    static double getTotalEnergyConsumption() {
+        return totalEnergyConsumption;
+    }
+};
+int BuildingStatistics::buildingCount = 0;
+double BuildingStatistics::totalEnergyConsumption = 0.0;
+
+
+class Building {
+private:
+    string name;
+    double area;
+
+public:
+    Building() : name("Unknown Building"), area(0.0) {
+        BuildingStatistics::incrementBuildingCount();
     }
 
-    Building& setArea(double newArea) {
-        this->area = newArea;
-        return *this;
+    Building(string name, double area) : name(name), area(area) {
+        BuildingStatistics::incrementBuildingCount();
     }
 
-    double calculateCost(double costPerSqm) {
-        return this->area * costPerSqm;
-    }
-
-    void displayInfo() {  // Regular function (no longer abstract)
-        cout << "Building Name: " << name << endl;
-        cout << "Building Area: " << area << " sqm" << endl;
+    virtual ~Building() {
+        cout << "Destructor for Building '" << name << "' called!" << endl;
     }
 
     double getArea() const {
-        return this->area;
+        return area;
+    }
+
+    virtual void displayInfo() const {
+        cout << "Building Name: " << name << endl;
+        cout << "Building Area: " << area << " sqm" << endl;
     }
 };
 
-int Building::buildingCount = 0;
-double Building::totalConstructionCost = 0.0;
 
 class Material {
 private:
@@ -64,84 +64,47 @@ private:
     double costPerSqm;
 
 public:
-    Material() {
-        type = "Generic Material";
-        costPerSqm = 0.0;
-        cout << "Default constructor for Material called!" << endl;
-    }
-
-    Material(string type, double costPerSqm) {
-        this->type = type;
-        this->costPerSqm = costPerSqm;
-        cout << "Parameterized constructor for Material called!" << endl;
-    }
+    Material(string type = "Generic Material", double costPerSqm = 0.0) 
+        : type(type), costPerSqm(costPerSqm) {}
 
     ~Material() {
         cout << "Destructor for Material '" << type << "' called!" << endl;
     }
 
-    Material& setCostPerSqm(double newCost) {
-        this->costPerSqm = newCost;
-        return *this;
+    double getCostPerSqm() const {
+        return costPerSqm;
     }
 
-    void displayInfo() {
+    void displayInfo() const {
         cout << "Material Type: " << type << endl;
         cout << "Cost per sqm: $" << costPerSqm << endl;
     }
-
-    double getCostPerSqm() const {
-        return this->costPerSqm;
-    }
 };
+
 
 class EnergySimulationEngine {
 private:
     double energyConsumption;
 
 public:
-    static double totalEnergyConsumption;  
-
-    EnergySimulationEngine() {
-        energyConsumption = 0.0;
-        cout << "Default constructor for EnergySimulationEngine called!" << endl;
-    }
-
-    EnergySimulationEngine(double consumption) {
-        this->energyConsumption = consumption;
-        cout << "Parameterized constructor for EnergySimulationEngine called!" << endl;
-    }
+    EnergySimulationEngine(double consumption = 0.0) 
+        : energyConsumption(consumption) {}
 
     ~EnergySimulationEngine() {
         cout << "Destructor for EnergySimulationEngine called!" << endl;
     }
 
-    double calculateEnergyEfficiency(double area) {
+    double calculateEnergyEfficiency(double area) const {
         return energyConsumption * area;
     }
 
-    double calculateEnergyEfficiency(int numApartments) { 
-        return energyConsumption * numApartments * 10;  
-    }
-
-    void displayEnergyEfficiency(double area) {
+    void displayEnergyEfficiency(double area) const {
         double totalEnergy = calculateEnergyEfficiency(area);
-        totalEnergyConsumption += totalEnergy; 
+        BuildingStatistics::addEnergyConsumption(totalEnergy);
         cout << "Total Energy Consumption: " << totalEnergy << " kWh for " << area << " sqm" << endl;
-    }
-
-    void displayEnergyEfficiency(int numApartments) {
-        double totalEnergy = calculateEnergyEfficiency(numApartments);
-        totalEnergyConsumption += totalEnergy; 
-        cout << "Total Energy Consumption: " << totalEnergy << " kWh for " << numApartments << " apartments" << endl;
-    }
-
-    static double getTotalEnergyConsumption() {
-        return totalEnergyConsumption;
     }
 };
 
-double EnergySimulationEngine::totalEnergyConsumption = 0.0;
 
 class UserDetail {
 private:
@@ -150,19 +113,8 @@ private:
     string password;
 
 public:
-    UserDetail() {
-        name = "Unknown";
-        companyName = "Unknown";
-        password = "";
-        cout << "Default constructor for UserDetail called!" << endl;
-    }
-
-    UserDetail(string name, string companyName, string password) {
-        this->name = name;
-        this->companyName = companyName;
-        this->password = password;
-        cout << "Parameterized constructor for UserDetail called!" << endl;
-    }
+    UserDetail(string name = "Unknown", string companyName = "Unknown", string password = "") 
+        : name(name), companyName(companyName), password(password) {}
 
     ~UserDetail() {
         cout << "Destructor for UserDetail '" << name << "' called!" << endl;
@@ -172,124 +124,84 @@ public:
         return name;
     }
 
-    string getCompanyName() const {
-        return companyName;
-    }
-
-    void setPassword(string newPassword) {
-        password = newPassword;
-    }
-
-    bool checkPassword(string enteredPassword) {
-        return enteredPassword == password;
+    bool checkPassword(const string& enteredPassword) const {
+        return password == enteredPassword;
     }
 };
+
 
 class ResidentialBuilding : public Building {
 private:
     int numApartments;
 
 public:
-    ResidentialBuilding(string name, double area, int numApartments)
-        : Building(name, area), numApartments(numApartments) {
-        cout << "ResidentialBuilding constructor called!" << endl;
-    }
+    ResidentialBuilding(string name, double area, int numApartments) 
+        : Building(name, area), numApartments(numApartments) {}
 
-    void displayInfo() override { 
-        Building::displayInfo();  
+    void displayInfo() const override {
+        Building::displayInfo();
         cout << "Number of Apartments: " << numApartments << endl;
     }
 };
+
 
 class SolarPoweredBuilding : public ResidentialBuilding {
 private:
     double solarPanelArea;
 
 public:
-    SolarPoweredBuilding(string name, double area, int numApartments, double solarPanelArea)
-        : ResidentialBuilding(name, area, numApartments), solarPanelArea(solarPanelArea) {
-        cout << "SolarPoweredBuilding constructor called!" << endl;
-    }
+    SolarPoweredBuilding(string name, double area, int numApartments, double solarPanelArea) 
+        : ResidentialBuilding(name, area, numApartments), solarPanelArea(solarPanelArea) {}
 
-    double calculateSolarEnergy(double energyPerSqm) {
-        return solarPanelArea * energyPerSqm;
-    }
-
-    void displayInfo() override {
-        ResidentialBuilding::displayInfo(); 
+    void displayInfo() const override {
+        ResidentialBuilding::displayInfo();
         cout << "Solar Panel Area: " << solarPanelArea << " sqm" << endl;
     }
 };
 
+// Main function
 int main() {
-    Building* buildings[3];
-    buildings[0] = new ResidentialBuilding("Residential Apartment 1", 500.0, 10);
-    buildings[1] = new ResidentialBuilding("Residential Apartment 2", 300.0, 5);
-    buildings[2] = new ResidentialBuilding("Residential Apartment 3", 800.0, 15);
+    vector<Building*> buildings;
+    buildings.push_back(new ResidentialBuilding("Residential Apartment 1", 500.0, 10));
+    buildings.push_back(new ResidentialBuilding("Residential Apartment 2", 300.0, 5));
+    buildings.push_back(new ResidentialBuilding("Residential Apartment 3", 800.0, 15));
 
-    Material* concrete = new Material("Concrete", 150.0);
-    EnergySimulationEngine* energySim = new EnergySimulationEngine(12.5);
-    UserDetail* users[3];
-    users[0] = new UserDetail("Alice", "ABC Corp", "password123");
-    users[1] = new UserDetail("Bob", "XYZ Ltd", "pass456");
-    users[2] = new UserDetail("Charlie", "LMN Inc", "charlie789");
+    Material concrete("Concrete", 150.0);
+    EnergySimulationEngine energySim(12.5);
 
-    concrete->displayInfo();
+    // Create a user and simulate login
+    UserDetail user("Alice", "GreenTech Builders", "securePass123");
+    cout << "Welcome, " << user.getName() << " from " << "GreenTech Builders!" << endl;
 
-    string enteredUser;
-    cout << "Is your user in this list? (yes/no): ";
-    cin >> enteredUser;
+    // Simulate user authentication
+    string enteredPassword;
+    cout << "Enter your password: ";
+    cin >> enteredPassword;
 
-    if (enteredUser == "yes" || enteredUser == "YES") {
-        cout << "Enter your name: ";
-        string userName;
-        cin >> userName;
+    if (user.checkPassword(enteredPassword)) {
+        cout << "Authentication successful! Proceeding to building details...\n" << endl;
 
-        bool userFound = false;
-        for (int i = 0; i < 3; ++i) {
-            if (users[i]->getName() == userName) {
-                userFound = true;
-                string enteredPassword;
-                cout << "Enter your password: ";
-                cin >> enteredPassword;
+       
+        concrete.displayInfo();
 
-                if (users[i]->checkPassword(enteredPassword)) {
-                    cout << "Password correct!" << endl;
-                    cout << "User Name: " << users[i]->getName() << endl;
-                    cout << "Company: " << users[i]->getCompanyName() << endl;
-                } else {
-                    cout << "Incorrect password!" << endl;
-                }
-                break;
-            }
+    
+        for (size_t i = 0; i < buildings.size(); ++i) {
+            cout << "\nDetails for Building " << (i + 1) << ":\n";
+            buildings[i]->displayInfo();
+            energySim.displayEnergyEfficiency(buildings[i]->getArea());
         }
 
-        if (!userFound) {
-            cout << "User not found!" << endl;
-            return 0;
-        }
+        cout << "\nTotal Buildings Created: " << BuildingStatistics::getBuildingCount() << endl;
+        cout << "Total Energy Consumption for All Buildings: " << BuildingStatistics::getTotalEnergyConsumption() << " kWh" << endl;
     } else {
-        cout << "Exiting..." << endl;
-        return 0;
+        cout << "Authentication failed! Access denied." << endl;
     }
 
-    for (int i = 0; i < 3; ++i) {
-        cout << "\nDetails for Building " << (i + 1) << ":\n";
-        buildings[i]->displayInfo();
-        double totalCost = buildings[i]->calculateCost(concrete->getCostPerSqm());
-        cout << "Total Construction Cost: $" << totalCost << endl;
-        energySim->displayEnergyEfficiency(buildings[i]->getArea());
-    }
 
-    cout << "\nTotal Buildings Created: " << Building::getBuildingCount() << endl;
-    cout << "Total Energy Consumption for All Buildings: " << EnergySimulationEngine::getTotalEnergyConsumption() << " kWh" << endl;
-
-    delete concrete;
-    delete energySim;
-    for (int i = 0; i < 3; ++i) {
-        delete buildings[i];
-        delete users[i];
+    for (Building* b : buildings) {
+        delete b;
     }
 
     return 0;
 }
+
