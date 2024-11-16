@@ -26,48 +26,80 @@ public:
 
     void displayEnergyEfficiency(double area) const override {
         double totalEnergy = calculateEnergyEfficiency(area);
-        cout << "Total Energy Consumption: " << totalEnergy << " kWh for " << area << " sqm" << endl;
+        cout << "Basic Simulation - Total Energy Consumption: " << totalEnergy << " kWh for " << area << " sqm" << endl;
     }
 };
 
-// Statistics tracker interface for modular statistics
-class StatisticsTracker {
-public:
-    virtual ~StatisticsTracker() = default;
-    virtual void update(double value) = 0;
-    virtual void display() const = 0;
-};
-
-// Concrete tracker for building statistics
-class BuildingStatisticsTracker : public StatisticsTracker {
+// Concrete implementation for advanced energy simulation
+class AdvancedEnergySimulation : public EnergySimulationStrategy {
 private:
-    static int buildingCount;
-    static double totalEnergyConsumption;
+    double baseConsumption;
+    double efficiencyFactor;
 
 public:
-    void update(double energy) override {
-        totalEnergyConsumption += energy;
+    AdvancedEnergySimulation(double baseConsumption = 0.0, double efficiencyFactor = 1.0)
+        : baseConsumption(baseConsumption), efficiencyFactor(efficiencyFactor) {}
+
+    double calculateEnergyEfficiency(double area) const override {
+        return (baseConsumption * area) / efficiencyFactor;
     }
 
-    void display() const override {
-        cout << "\nTotal Buildings Created: " << buildingCount << endl;
-        cout << "Total Energy Consumption for All Buildings: " << totalEnergyConsumption << " kWh" << endl;
-    }
-
-    static void incrementBuildingCount() {
-        buildingCount++;
-    }
-
-    static int getBuildingCount() {
-        return buildingCount;
-    }
-
-    static double getTotalEnergyConsumption() {
-        return totalEnergyConsumption;
+    void displayEnergyEfficiency(double area) const override {
+        double totalEnergy = calculateEnergyEfficiency(area);
+        cout << "Advanced Simulation - Total Energy Consumption: " << totalEnergy << " kWh for " << area << " sqm" << endl;
     }
 };
-int BuildingStatisticsTracker::buildingCount = 0;
-double BuildingStatisticsTracker::totalEnergyConsumption = 0.0;
+
+// Abstract base class for building types
+class Building {
+private:
+    string name;
+    double area;
+
+public:
+    Building(string name, double area) : name(name), area(area) {}
+
+    virtual ~Building() = default;
+
+    double getArea() const {
+        return area;
+    }
+
+    virtual void displayInfo() const {
+        cout << "Building Name: " << name << endl;
+        cout << "Building Area: " << area << " sqm" << endl;
+    }
+};
+
+// Derived class for residential buildings
+class ResidentialBuilding : public Building {
+private:
+    int numApartments;
+
+public:
+    ResidentialBuilding(string name, double area, int numApartments)
+        : Building(name, area), numApartments(numApartments) {}
+
+    void displayInfo() const override {
+        Building::displayInfo();
+        cout << "Number of Apartments: " << numApartments << endl;
+    }
+};
+
+// Derived class for commercial buildings
+class CommercialBuilding : public Building {
+private:
+    int numOffices;
+
+public:
+    CommercialBuilding(string name, double area, int numOffices)
+        : Building(name, area), numOffices(numOffices) {}
+
+    void displayInfo() const override {
+        Building::displayInfo();
+        cout << "Number of Offices: " << numOffices << endl;
+    }
+};
 
 // Base class for user roles
 class UserRole {
@@ -115,74 +147,62 @@ public:
     }
 };
 
-// Base class for buildings
-class Building {
+// Tracker for building statistics
+class BuildingStatisticsTracker {
 private:
-    string name;
-    double area;
+    static int buildingCount;
 
 public:
-    Building(string name, double area) : name(name), area(area) {
-        BuildingStatisticsTracker::incrementBuildingCount();
+    static void incrementBuildingCount() {
+        buildingCount++;
     }
 
-    virtual ~Building() = default;
-
-    double getArea() const {
-        return area;
-    }
-
-    virtual void displayInfo() const {
-        cout << "Building Name: " << name << endl;
-        cout << "Building Area: " << area << " sqm" << endl;
+    static void displayStats() {
+        cout << "\nTotal Buildings Created: " << buildingCount << endl;
     }
 };
-
-// Derived class for residential buildings
-class ResidentialBuilding : public Building {
-private:
-    int numApartments;
-
-public:
-    ResidentialBuilding(string name, double area, int numApartments)
-        : Building(name, area), numApartments(numApartments) {}
-
-    void displayInfo() const override {
-        Building::displayInfo();
-        cout << "Number of Apartments: " << numApartments << endl;
-    }
-};
+int BuildingStatisticsTracker::buildingCount = 0;
 
 // Main function
 int main() {
     vector<unique_ptr<Building>> buildings;
     buildings.push_back(make_unique<ResidentialBuilding>("Residential Apartment 1", 500.0, 10));
-    buildings.push_back(make_unique<ResidentialBuilding>("Residential Apartment 2", 300.0, 5));
-    buildings.push_back(make_unique<ResidentialBuilding>("Residential Apartment 3", 800.0, 15));
+    buildings.push_back(make_unique<CommercialBuilding>("Commercial Complex 1", 1200.0, 20));
+    buildings.push_back(make_unique<ResidentialBuilding>("Residential Apartment 2", 700.0, 12));
 
-    BuildingStatisticsTracker statsTracker;
+    // Increment building count
+    for (const auto& building : buildings) {
+        BuildingStatisticsTracker::incrementBuildingCount();
+    }
 
-    shared_ptr<EnergySimulationStrategy> energySim = make_shared<BasicEnergySimulation>(12.5);
+
+    vector<shared_ptr<EnergySimulationStrategy>> simulations;
+    simulations.push_back(make_shared<BasicEnergySimulation>(12.5));
+    simulations.push_back(make_shared<AdvancedEnergySimulation>(10.0, 1.5));
+
 
     UserDetail user("Alice", "GreenTech Builders", "securePass123", make_shared<AdminRole>());
 
-    cout << "Welcome, " << "Alice from GreenTech Builders!" << endl;
+    cout << "Welcome, Alice from GreenTech Builders!" << endl;
 
     string enteredPassword;
     cout << "Enter your password: ";
     cin >> enteredPassword;
 
     if (user.checkPassword(enteredPassword)) {
-        cout << "Authentication successful! Proceeding to building details...\n" << endl;
+        cout << "\nAuthentication successful! Proceeding to building details...\n" << endl;
         user.displayRoleAccess();
 
         for (size_t i = 0; i < buildings.size(); ++i) {
             cout << "\nDetails for Building " << (i + 1) << ":\n";
             buildings[i]->displayInfo();
-            energySim->displayEnergyEfficiency(buildings[i]->getArea());
+
+            for (const auto& simulation : simulations) {
+                simulation->displayEnergyEfficiency(buildings[i]->getArea());
+            }
         }
 
-        statsTracker.display();
+        BuildingStatisticsTracker::displayStats();
     } else {
         cout << "Authentication failed! Access denied." << endl;
     }
